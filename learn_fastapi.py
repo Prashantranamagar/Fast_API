@@ -185,19 +185,20 @@ async def delete_book(book):
 
 
 """
-Pydantics
-library that is used for data modeling and data parsing and have effecient error handaling.
-commanly used with FastAPI to validate rIn FastAPI, Path is used to validate and document path parameters — the variables you include in your URL route like /users/{user_id}.equest bodies and query parameters.
-
-We will be implementing
-Creates different request model for data validation
-Field data validation on each variable.
-
-Field is used with Pydantic models to add metadata, validations, defaults, and Swagger documentation for each field in the model.
 
 In FastAPI, Path is used to validate and document path parameters — the variables you include in your URL route like /users/{user_id}.
 
 In FastAPI, Query() is used to explicitly declare and validate query parameters — the values sent in the URL after the ? symbol.
+
+Pydantics
+library that is used for data modeling and data parsing and have effecient error handaling.
+commanly used with FastAPI to validate rIn FastAPI, 
+
+BaseModel is the core class used to define data schemas with validation. It’s commonly used with FastAPI, 
+Django (pydantic-django), or any Python application that needs data validation and parsing.
+
+Field is used with Pydantic models to add metadata, validations, defaults, and Swagger documentation for each field in the model.
+
 
 Status codes
 1XX --> Request Processing
@@ -213,4 +214,39 @@ Explicit Status code response
 In FastAPI, you can explicitly define the HTTP status code that a route should return using:
 The status_code parameter in route decorators
 Response objects like JSONResponse or Response
+
+
+Alembic For data migration
+Lightweight database migration tool for use with SQLAlchemy.
+allows us to manage database schema changes over time.
+ 
+alembic init alembic  --> initialize the alembic directory
+
+add datadase configuration to alembic.ini file:
+sqlalchemy.url = sqlite:///./test.db
+
+add Base metadata to alembic/env.py file:
+from models import Base
+target_metadata = Base.metadata
+
+
+Run Alembic Autogenerate to detect the new model:
+alembic revision --autogenerate -m "Add Blog model"
+
+alembic revision is how we create a new alembic file where we can add some type of database upgrade
+alembic revision -m "Initial migration"  --> create a new blank  migration file with upgrade and downgrade functions
+know that altercation to the table schema should be written manually in the newly created migration file
+use upgrate function to add columns, tables, or constraints
+use downgrade function to remove columns, tables, or constraints
+to add new columns, you can use the op.add_column() inside the upgrade function
+to remove columns, you can use the op.drop_column() insede  upgrade function
+to change constraints, you can use the op.alter_column() inside the upgrade function
+
+alembic upgrade is how we actually run the migration
+alembic upgrade <revision>  --> apply the migration to the database
+alembic upgrade head  --> apply all migrations to the latest version
+alembic downgrade <revision>  --> revert the migration
+alembic downgrade head  --> revert all migrations to the initial state
+alembic downgrade - 1  --> revert the last migration
+
 """
